@@ -1,10 +1,9 @@
-// File: Main/functional/artifact/artifact-generator.js
-// @path Main/functional/artifact/artifact-generator.js
+// Main/functional/artifact/artifact-generator.js
+
 import {
   MAX_LEVEL_BY_RARITY,
   MAIN_STAT_TYPES_BY_SLOT,
-  MAIN_STAT_LABELS,
-  SUB_STAT_LABELS,
+  MAIN_STAT_DISTRIBUTION,
   ALL_SUBSTAT_TYPES,
   SUBSTAT_START_ROLLS,
   SUBSTAT_UPGRADE_ROLLS,
@@ -18,53 +17,83 @@ function randomId() {
   return String(Date.now() + Math.random());
 }
 
-function randomFrom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+function randomFrom(arr, rng = Math.random) {
+  return arr[Math.floor(rng() * arr.length)];
+}
+
+function weightedRandom(distribution, rng = Math.random) {
+  const total = distribution.reduce((sum, item) => sum + item.weight, 0);
+  let r = rng() * total;
+
+  for (const item of distribution) {
+    if (r < item.weight) return item.type;
+    r -= item.weight;
+  }
+  // На всякий случай
+  return distribution[distribution.length - 1].type;
 }
 
 // стартовое число саб-статов (приближённо к игре)
-function rollInitialSubstatCount(rarity) {
+function rollInitialSubstatCount(rarity, rng = Math.random) {
   if (rarity === 5) {
-    return Math.random() < 0.75 ? 4 : 3;
+    return rng() < 0.75 ? 4 : 3;
   }
   if (rarity === 4) {
-    return Math.random() < 0.5 ? 4 : 3;
+    return rng() < 0.5 ? 4 : 3;
   }
   return 3;
 }
 
-// пока без весов, просто равномерно по допустимым типам
-function rollMainStat(slotKey) {
+// выбор основного стата с учётом MAIN_STAT_DISTRIBUTION, если есть
+function rollMainStat(slotKey, rng = Math.random) {
+  const dist = MAIN_STAT_DISTRIBUTION[slotKey];
+  if (dist && dist.length > 0) {
+    return weightedRandom(dist, rng);
+  }
+
   const list = MAIN_STAT_TYPES_BY_SLOT[slotKey];
   if (!list || list.length === 0) {
     throw new Error(`Для слота ${slotKey} не заданы основные статы`);
   }
-  return randomFrom(list);
+  return randomFrom(list, rng);
 }
 
-function generateInitialSubstats(mainStatType, count, rarity) {
+function generateInitialSubstats(
+  mainStatType,
+  count,
+  rarity,
+  rng = Math.random
+) {
   const candidates = ALL_SUBSTAT_TYPES.filter((t) => t !== mainStatType);
   const substats = [];
+
   while (substats.length < count && candidates.length > 0) {
-    const type = randomFrom(candidates);
-    candidates.splice(candidates.indexOf(type), 1);
+    const index = Math.floor(rng() * candidates.length);
+    const type = candidates.splice(index, 1)[0];
+
     const rolls = SUBSTAT_START_ROLLS[rarity][type] || [0];
-    const value = randomFrom(rolls);
+    const value = randomFrom(rolls, rng);
+
     substats.push({
       type,
-      label: SUB_STAT_LABELS[type] || "",
       value,
-      rolls: [value],
+      rolls: [value], // история стартового ролла
     });
   }
+
   return substats;
 }
 
+/**
+ * "Сырый" экземпляр артефакта (без UI-строк, иконок и т.п.).
+ * Всё, что нужно для отображения, достаём отдельно из описания сета.
+ */
 export function createArtifactInstance(
   setDef,
   slotKey,
   rarity,
-  overrides = {}
+  overrides = {},
+  rng = Math.random
 ) {
   const piece = setDef.pieces[slotKey];
   if (!piece) {
@@ -75,9 +104,7 @@ export function createArtifactInstance(
   const level = overrides.level ?? 0;
   const maxLevel = MAX_LEVEL_BY_RARITY[rarity] || 20;
 
-  const mainStatType = overrides.mainStatType || rollMainStat(slotKey);
-  const mainStatLabel =
-    overrides.mainStatLabel || MAIN_STAT_LABELS[mainStatType] || "";
+  const mainStatType = overrides.mainStatType || rollMainStat(slotKey, rng);
 
   const mainStatValue =
     overrides.mainStatValue !== undefined
@@ -85,43 +112,34 @@ export function createArtifactInstance(
       : getMainStatValue(rarity, mainStatType, level);
 
   const startSubCount =
-    overrides.startSubCount ?? rollInitialSubstatCount(rarity);
+    overrides.startSubCount ?? rollInitialSubstatCount(rarity, rng);
 
   const substats =
     overrides.substats ||
-    generateInitialSubstats(mainStatType, startSubCount, rarity);
-
-  const setBonuses = Object.entries(setDef.bonuses || {}).map(
-    ([pieces, description]) => ({
-      pieces: Number(pieces),
-      description,
-    })
-  );
+    generateInitialSubstats(mainStatType, startSubCount, rarity, rng);
 
   return {
     id,
     setId: setDef.id,
-    setName: setDef.name,
-    slotKey: piece.slotKey,
-    slotLabel: piece.slotLabel,
-    name: piece.name,
-    iconUrl: piece.iconUrl,
+    slotKey,
     rarity,
     level,
     maxLevel,
     mainStatType,
-    mainStatLabel,
     mainStatValue,
     substats,
-    setBonuses,
-    description: piece.description || "",
     isLocked: Boolean(overrides.isLocked),
     isFavorited: Boolean(overrides.isFavorited),
+    // Лог событий апгрейда, чтобы потом красиво анимировать
     upgradeLog: [],
   };
 }
 
-export function upgradeArtifact(artifact, targetLevel) {
+/**
+ * Пока оставляем мутирующий апгрейд (как у тебя), но уже без UI-полей.
+ * Позже можно будет переписать на "шаговый" upgradeArtifactStep.
+ */
+export function upgradeArtifact(artifact, targetLevel, rng = Math.random) {
   const max = artifact.maxLevel;
   const newLevel = Math.min(targetLevel, max);
 
@@ -134,45 +152,62 @@ export function upgradeArtifact(artifact, targetLevel) {
     );
 
     if (lvl % 4 === 0) {
-      applySubstatUpgrade(artifact);
+      applySubstatUpgrade(artifact, rng);
     }
   }
 }
 
-function applySubstatUpgrade(artifact) {
+function applySubstatUpgrade(artifact, rng = Math.random) {
   const rarity = artifact.rarity;
 
   if (!artifact.upgradeLog) artifact.upgradeLog = [];
 
+  // если сабов меньше 4 – добавляем новый
   if (artifact.substats.length < 4) {
-    const newType = rollNewSubstatType(artifact);
-    const roll = randomFrom(SUBSTAT_UPGRADE_ROLLS[rarity][newType] || [0]);
+    const newType = rollNewSubstatType(artifact, rng);
+    const roll = randomFrom(SUBSTAT_UPGRADE_ROLLS[rarity][newType] || [0], rng);
+
     artifact.substats.push({
       type: newType,
-      label: SUB_STAT_LABELS[newType] || "",
       value: roll,
       rolls: [roll],
     });
-    artifact.upgradeLog.push({ type: newType, roll, added: true });
+
+    artifact.upgradeLog.push({
+      level: artifact.level,
+      type: newType,
+      roll,
+      added: true,
+    });
   } else {
-    const index = Math.floor(Math.random() * artifact.substats.length);
+    // иначе рандомный уже существующий саб получает прок
+    const index = Math.floor(rng() * artifact.substats.length);
     const sub = artifact.substats[index];
     const rolls = SUBSTAT_UPGRADE_ROLLS[rarity][sub.type] || [0];
-    const roll = randomFrom(rolls);
+    const roll = randomFrom(rolls, rng);
+
     sub.value += roll;
     if (!sub.rolls) sub.rolls = [];
     sub.rolls.push(roll);
-    artifact.upgradeLog.push({ type: sub.type, roll, added: false });
+
+    artifact.upgradeLog.push({
+      level: artifact.level,
+      type: sub.type,
+      roll,
+      added: false,
+    });
   }
 }
 
-function rollNewSubstatType(artifact) {
+function rollNewSubstatType(artifact, rng = Math.random) {
   const usedTypes = artifact.substats.map((s) => s.type);
+
   const candidates = ALL_SUBSTAT_TYPES.filter(
     (t) => t !== artifact.mainStatType && !usedTypes.includes(t)
   );
+
   if (candidates.length === 0) {
-    return randomFrom(ALL_SUBSTAT_TYPES);
+    return randomFrom(ALL_SUBSTAT_TYPES, rng);
   }
-  return randomFrom(candidates);
+  return randomFrom(candidates, rng);
 }
