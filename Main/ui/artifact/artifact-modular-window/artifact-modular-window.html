@@ -1,0 +1,75 @@
+<!-- File: Main/ui/artifact/artifact-modular-window/artifact-modular-window.html -->
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Genshin Artefact UI</title>
+    <link rel="stylesheet" href="artifact-modular-window.css" />
+  </head>
+
+  <body>
+    <div class="page">
+      <div class="artifact-list" id="artifact-list"></div>
+
+      <section class="artifact-card">
+        <div class="artifact-card__inner" id="artifact-card-root">
+          <div class="artifact-card__scroll">
+            <header class="artifact-card__header">
+              <div class="artifact-card__title-bar">
+                <span class="artifact-card__title"></span>
+              </div>
+
+              <div class="artifact-card__header-content">
+                <div class="artifact-card__main-info">
+                  <div class="artifact-card__slot"></div>
+
+                  <div class="artifact-card__main-stat-label"></div>
+
+                  <div class="artifact-card__main-stat-value"></div>
+
+                  <div class="artifact-card__stars"></div>
+                </div>
+                <div class="artifact-card__icon-frame">
+                  <img
+                    class="artifact-card__icon-image"
+                    src=""
+                    alt="Иконка артефакта"
+                    draggable="false"
+                  />
+                </div>
+              </div>
+            </header>
+
+            <div class="artifact-card__body">
+              <div class="artifact-card__top-row">
+                <div class="artifact-card__level"></div>
+
+                <div class="artifact-card__actions">
+                  <button
+                    class="artifact-card__lock"
+                    aria-label="Заблокировать"
+                  ></button>
+                  <button
+                    class="artifact-card__favorite"
+                    aria-label="В избранное"
+                  ></button>
+                </div>
+              </div>
+
+              <ul class="artifact-card__substats"></ul>
+
+              <section class="artifact-card__set-section">
+                <h2 class="artifact-card__set-title"></h2>
+
+                <div class="artifact-card__set-bonus"></div>
+
+                <p class="artifact-card__description"></p>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script src="artifact-modular-window.js"></script>
+  </body>
+</html>

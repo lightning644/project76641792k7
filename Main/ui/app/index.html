@@ -1,0 +1,133 @@
+<!-- File: Main/ui/app/index.html -->
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Genshin Artifact Simulator</title>
+    <link
+      rel="stylesheet"
+      href="../artifact/artifact-modular-window/artifact-modular-window.css"
+    />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+
+  <body>
+    <header class="navbar">
+      <button class="navbar__btn navbar__btn--active" data-page="inventory">
+        Инвентарь
+      </button>
+      <button class="navbar__btn" data-page="gacha">Получение</button>
+      <button class="navbar__btn" data-page="build">Манекен</button>
+    </header>
+
+    <main class="app-main">
+      <section id="page-inventory" class="page page--active">
+        <!-- сюда перенесём layout из inventory.html -->
+        <div class="page-inventory__left">
+          <!-- Панель получения (как сейчас) -->
+          <form id="gacha-form" class="gacha-form">
+            <h2>Получение артефакта</h2>
+
+            <label>
+              Сет:
+              <select name="set">
+                <option value="">Любой</option>
+              </select>
+            </label>
+
+            <label>
+              Тип артефакта:
+              <select name="slot">
+                <option value="">Любой тип</option>
+              </select>
+            </label>
+
+            <label>
+              Редкость:
+              <select name="rarity">
+                <option value="5" selected>5★</option>
+                <option value="4">4★</option>
+              </select>
+            </label>
+
+            <button id="gacha-button">Получить артефакт</button>
+          </form>
+
+          <button id="upgrade-button" class="upgrade-button">
+            Улучшить до максимума
+          </button>
+
+          <div id="inventory-grid" class="inventory-grid"></div>
+        </div>
+
+        <section class="artifact-card">
+          <div class="artifact-card__inner" id="artifact-card-root">
+            <div class="artifact-card__scroll">
+              <header class="artifact-card__header">
+                <div class="artifact-card__title-bar">
+                  <span class="artifact-card__title"></span>
+                </div>
+
+                <div class="artifact-card__header-content">
+                  <div class="artifact-card__main-info">
+                    <div class="artifact-card__slot"></div>
+                    <div class="artifact-card__main-stat-label"></div>
+                    <div class="artifact-card__main-stat-value"></div>
+                    <div class="artifact-card__stars"></div>
+                  </div>
+
+                  <div class="artifact-card__icon-frame">
+                    <img
+                      class="artifact-card__icon-image"
+                      src=""
+                      alt="Иконка артефакта"
+                    />
+                  </div>
+                </div>
+              </header>
+
+              <div class="artifact-card__body">
+                <div class="artifact-card__top-row">
+                  <div class="artifact-card__level"></div>
+
+                  <div class="artifact-card__actions">
+                    <button
+                      class="artifact-card__lock"
+                      aria-label="Заблокировать"
+                    ></button>
+                    <button
+                      class="artifact-card__favorite"
+                      aria-label="В избранное"
+                    ></button>
+                  </div>
+                </div>
+
+                <ul class="artifact-card__substats"></ul>
+
+                <section class="artifact-card__set-section">
+                  <h2 class="artifact-card__set-title"></h2>
+                  <div class="artifact-card__set-bonus"></div>
+                  <p class="artifact-card__description"></p>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="page-gacha" class="page">
+        <div class="page-gacha__placeholder">
+          Вкладка «Получение» – здесь позже будет затемнённый экран и список
+          выпавших артефактов.
+        </div>
+      </section>
+      <section id="page-build" class="page">
+        <div class="page-build__placeholder">
+          Вкладка «Манекен» – пока пусто.
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

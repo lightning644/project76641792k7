@@ -1,0 +1,165 @@
+/* File: Main/ui/app/app.css */
+body {
+  margin: 0;
+  background: #1b2740;
+  font-family: "GenshinFont", system-ui, sans-serif;
+  color: #f5f5f5;
+}
+
+.navbar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #202a43;
+}
+
+.navbar__btn {
+  flex: 0 0 96px;
+  height: 60px;
+  border: none;
+  border-radius: 4px;
+  background: #2b3654;
+  cursor: pointer;
+  color: #d8d8e0;
+  font-size: 14px;
+}
+
+.navbar__btn--active {
+  background: #374474;
+  border-bottom: 4px solid #f5cf6a;
+  color: #ffffff;
+}
+
+.app-main {
+  padding: 16px 24px;
+}
+
+.page {
+  display: none;
+}
+
+.page.page--active {
+  display: flex;
+  gap: 24px;
+}
+
+/* Инвентарь */
+
+.page-inventory__left {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gacha-form {
+  padding: 12px;
+  background: #2b3654;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gacha-form h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.gacha-form label {
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gacha-form select,
+.gacha-form button {
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: none;
+}
+
+.gacha-form button {
+  height: 75px;
+  margin-top: 8px;
+  cursor: pointer;
+  background: #f5cf6a;
+}
+
+.upgrade-button {
+  height: 60px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #f5cf6a;
+  font-size: 14px;
+}
+
+/* инвентарь: квадрат + скролл, 4 слота в ряд */
+
+.inventory-grid {
+  width: 320px;
+  height: 280px;
+  background: #2b3654;
+  border-radius: 8px;
+  padding: 8px;
+  display: inline-grid;
+  gap: 6px;
+  overflow-y: auto;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: max-content;
+}
+
+.inv-slot {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  background: #3c4a70;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.inv-slot__icon {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 60%;
+  object-fit: contain;
+}
+
+.inv-slot__level {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  font-size: 11px;
+  color: #fff;
+}
+
+.inv-slot--rarity-5 {
+  box-shadow: 0 0 0 2px #bc6932;
+}
+
+.inv-slot--rarity-4 {
+  box-shadow: 0 0 0 2px #a050e1;
+}
+
+.inv-slot--selected {
+  outline: 2px solid #f8d24a;
+}
+
+/* заглушки для других страниц */
+
+.page-gacha__placeholder,
+.page-build__placeholder {
+  font-size: 18px;
+  opacity: 0.7;
+  padding: 40px;
+}

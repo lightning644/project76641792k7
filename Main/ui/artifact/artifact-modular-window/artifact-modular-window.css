@@ -1,0 +1,365 @@
+/* File: Main/ui/artifact/artifact-modular-window/artifact-modular-window.css */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "GenshinFont";
+  src: url("resources/fonts/genshin-font.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px;
+  background: #1b2740;
+  font-family: "GenshinFont", system-ui, sans-serif;
+  font-weight: 400;
+}
+
+.artifact-card {
+  width: 492px;
+  height: 864px;
+  overflow: hidden;
+  position: relative;
+}
+
+.artifact-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  background: rgba(0, 0, 0, 0.1);
+  transition: height 0.1s ease;
+}
+
+.artifact-card.artifact-card--overflow::after {
+  height: 5px;
+}
+
+.artifact-card__inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.artifact-card__scroll {
+  width: 100%;
+  will-change: transform;
+}
+
+.artifact-card__inner::-webkit-scrollbar {
+  display: none;
+}
+
+.artifact-card__header {
+  position: relative;
+  padding-top: 24px;
+}
+
+.artifact-card__title-bar {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  padding: 0 27px;
+  overflow: hidden;
+  border: solid 3px;
+}
+
+.artifact-card__title {
+  display: block;
+  max-width: 100%;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  white-space: normal;
+  text-align: left;
+}
+
+.artifact-card__header-content {
+  width: 492px;
+  height: 225px;
+  padding: 0 29px;
+  position: relative;
+  color: #ffffff;
+  display: flex;
+  align-items: stretch;
+}
+
+.artifact-card__header-content::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.artifact-card__main-info {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  white-space: nowrap;
+}
+
+.artifact-card__icon-frame {
+  flex: 0 0 200px;
+  height: 200px;
+  margin-top: 7px;
+  margin-bottom: 18px;
+  margin-left: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.artifact-card__icon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.artifact-card__slot {
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+
+.artifact-card__main-stat-label {
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  opacity: 0.5;
+  margin-top: 62px;
+}
+
+.artifact-card__main-stat-value {
+  font-size: 42px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  margin-top: 6px;
+  opacity: 94.644%;
+}
+
+.artifact-card__stars {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+  margin-bottom: 17px;
+}
+
+.artifact-card__star {
+  width: 28px;
+  height: 28px;
+  background: url("resources/images/icons/big-star.svg") center/contain
+    no-repeat;
+}
+
+.artifact-card__body {
+  background: #ebe4d7;
+  border-bottom: 5px solid rgba(0, 0, 0, 0.1);
+  padding: 26px 29px 16px;
+}
+
+.artifact-card__top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.artifact-card__level {
+  width: 55px;
+  height: 27px;
+  border-radius: 4px;
+  background: #3b4350;
+  color: #ffffff;
+  font-size: 24px;
+  text-align: center;
+  font-weight: normal;
+}
+
+.artifact-card__actions {
+  display: flex;
+  gap: 16px;
+}
+
+.artifact-card__lock,
+.artifact-card__favorite {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f3f0e9;
+  box-shadow: 0 0 0 3px #dad6ca;
+  transition: transform 0.1s ease, opacity 0.1s ease, background-color 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.artifact-card__lock::before,
+.artifact-card__favorite::before {
+  content: "";
+  display: block;
+  width: 27px;
+  height: 30px;
+  background-color: #9ea1a7;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+}
+
+.artifact-card__lock::before {
+  mask-image: url("resources/images/icons/lock_off.svg");
+  -webkit-mask-image: url("resources/images/icons/lock_off.svg");
+}
+
+.artifact-card__lock--active::before {
+  mask-image: url("resources/images/icons/lock_on.svg");
+  -webkit-mask-image: url("resources/images/icons/lock_on.svg");
+  background-color: #ff8a75;
+}
+
+.artifact-card__favorite::before {
+  width: 30px;
+  height: 30px;
+  mask-image: url("resources/images/icons/favorite.svg");
+  -webkit-mask-image: url("resources/images/icons/favorite.svg");
+}
+
+.artifact-card__favorite--active::before {
+  background-color: #ffcc32;
+}
+
+.artifact-card__lock--active,
+.artifact-card__favorite--active {
+  background-color: #4c546b;
+  box-shadow: none;
+}
+
+.artifact-card__lock:hover,
+.artifact-card__favorite:hover {
+  transform: translateY(-1px);
+}
+
+.artifact-card__lock:active,
+.artifact-card__favorite:active {
+  transform: translateY(1px);
+}
+
+.artifact-card__substats {
+  list-style: none;
+  margin: 8px 0 18px;
+  padding-left: 0;
+  font-size: 24px;
+  line-height: 1;
+  color: #4c546b;
+}
+
+.artifact-card__substats li::before {
+  content: "•";
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  font-family: "GenshinFont";
+  font-size: 24px;
+  line-height: 24px;
+  text-align: center;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.artifact-card__substats li + li {
+  margin-top: 14px;
+}
+
+.artifact-card__set-bonus {
+  font-size: 24px;
+  line-height: 1.2;
+  color: #4c546b;
+  opacity: 0.75;
+}
+
+.artifact-card__set-title {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 1;
+  color: #61bf67;
+  font-weight: 400;
+}
+
+.artifact-card__set-line {
+  margin: 4px 0;
+  padding-left: 24px;
+}
+
+.artifact-card__set-count {
+  font-weight: 400;
+}
+
+.artifact-card__description {
+  margin: 16px 0 0;
+  font-size: 24px;
+  line-height: 1.2;
+  color: #4c546b;
+  opacity: 0.75;
+}
+
+.page {
+  display: flex;
+  gap: 24px;
+}
+
+.artifact-list {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-right: 24px;
+}
+
+.artifact-list__item {
+  padding: 8px 10px;
+  background: #243252;
+  color: #f5f5f5;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.artifact-list__item img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.artifact-list__item--selected {
+  outline: 2px solid #f8d24a;
+}
